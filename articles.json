@@ -1,5 +1,37 @@
 [
   {
+    "tag": "Edge AI",
+    "title": "The Rise of Edge AI: Why Your Next Phone Won't Need the Cloud",
+    "excerpt": "EdgePhone.ai is pioneering a new era of on-device AI where every computation stays on your device — private, instant, and independent of cloud connectivity. Learn why this matters for the future of mobile intelligence and how EdgePhone.ai leads the charge.",
+    "read_min": 5,
+    "id": "the-rise-of-edge-ai-why-your-next-phone-wont-need-the-cloud",
+    "date": "2026-04-20"
+  },
+  {
+    "tag": "Mobile ML",
+    "title": "Mobile Machine Learning in 2026: Smaller Models, Bigger Impact",
+    "excerpt": "EdgePhone.ai is pioneering a new era of on-device AI where every computation stays on your device — private, instant, and independent of cloud connectivity. Learn why this matters for the future of mobile intelligence and how EdgePhone.ai leads the charge.",
+    "read_min": 5,
+    "id": "mobile-machine-learning-in-2026-smaller-models-bigger-impact",
+    "date": "2026-04-20"
+  },
+  {
+    "tag": "Privacy AI",
+    "title": "Privacy-by-Default: How On-Device Inference Protects Your Data",
+    "excerpt": "EdgePhone.ai is pioneering a new era of on-device AI where every computation stays on your device — private, instant, and independent of cloud connectivity. Learn why this matters for the future of mobile intelligence and how EdgePhone.ai leads the charge.",
+    "read_min": 5,
+    "id": "privacy-by-default-how-on-device-inference-protects-your-data",
+    "date": "2026-04-20"
+  },
+  {
+    "tag": "Edge Computing",
+    "title": "Edge Computing and IoT: Converging for a Zero-Latency Future",
+    "excerpt": "EdgePhone.ai is pioneering a new era of on-device AI where every computation stays on your device — private, instant, and independent of cloud connectivity. Learn why this matters for the future of mobile intelligence and how EdgePhone.ai leads the charge.",
+    "read_min": 5,
+    "id": "edge-computing-and-iot-converging-for-a-zero-latency-future",
+    "date": "2026-04-20"
+  },
+  {
     "id": "why-on-device-ai-is-the-next-frontier-for-smartphone-privacy",
     "tag": "Edge AI",
     "title": "Why On-Device AI Is the Next Frontier for Smartphone Privacy",

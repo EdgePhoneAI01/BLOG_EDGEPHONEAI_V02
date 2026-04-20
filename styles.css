@@ -562,27 +562,59 @@ img, svg { display: block; max-width: 100%; }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  :root { --container-px: 1rem; }
-
-  .header-inner {
-    flex-direction: column;
-    gap: var(--space-md);
-    text-align: center;
+  :root {
+    --container-px: 1rem;
+    --space-3xl: 3rem;
+    --space-2xl: 2rem;
   }
 
+  /* Compact sticky header */
+  .header-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 0.65rem;
+    gap: var(--space-sm);
+  }
+
+  .logo-text { font-size: 1.1rem; }
+  .logo-icon { font-size: 1.2rem; }
+
   .primary-nav ul {
-    gap: var(--space-md);
-    flex-wrap: wrap;
-    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: nowrap;
+  }
+
+  .primary-nav a { font-size: 0.8rem; }
+
+  .nav-cta {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem !important;
   }
 
   .hero {
     padding-block: var(--space-2xl) var(--space-xl);
   }
 
+  /* 2 blogs per row */
   .articles-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
   }
+
+  /* Tighter card for 2-column layout */
+  .card {
+    padding: var(--space-md) var(--space-md) var(--space-lg);
+    gap: var(--space-sm);
+  }
+
+  .card-title { font-size: 0.95rem; }
+  .card-excerpt { font-size: 0.82rem; line-height: 1.6; }
+  .card-tag { font-size: 0.65rem; }
+  .card-meta { font-size: 0.75rem; }
+  .card-link { font-size: 0.8rem; }
+
+  .section-header { margin-bottom: var(--space-xl); }
 
   .cta-inner {
     flex-direction: column;
@@ -601,9 +633,32 @@ img, svg { display: block; max-width: 100%; }
 }
 
 @media (max-width: 480px) {
+  :root { --container-px: 0.75rem; }
+
+  /* Stack header on very small phones */
+  .header-inner {
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-align: center;
+    padding-block: 0.6rem;
+  }
+
+  .primary-nav ul { gap: var(--space-sm); justify-content: center; }
+
   .hero-title { font-size: 1.75rem; }
-  .section-title { font-size: 1.4rem; }
+  .section-title { font-size: 1.3rem; }
   .btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+
+  /* Keep 2 columns but smaller gap and tighter cards */
+  .articles-grid { gap: 0.6rem; }
+
+  .card {
+    padding: 0.75rem 0.75rem 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .card-title { font-size: 0.875rem; }
+  .card-excerpt { font-size: 0.78rem; line-height: 1.5; }
 }
 
 /* ── PRINT STYLES ───────────────────────────────────────────────── */

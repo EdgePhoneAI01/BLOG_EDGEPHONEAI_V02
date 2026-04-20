@@ -1,0 +1,116 @@
+# ================================================================
+# .github/workflows/build_news.yml
+# EdgePhone.ai – Automated Daily Blog Build
+# ================================================================
+#
+# SETUP CHECKLIST (one-time):
+# ─────────────────────────────────────────────────────────────────
+# 1. Go to  GitHub → Your repo → Settings → Secrets and variables
+#            → Actions → New repository secret
+#
+# 2. Add ONE of the following secrets (or both):
+#      Name: OPENAI_API_KEY   Value: sk-...your-openai-key...
+#      Name: GEMINI_API_KEY   Value: AI...your-gemini-key...
+#
+# 3. Optional secrets:
+#      AI_PROVIDER  →  "openai"  or  "gemini"
+#      AI_MODEL     →  e.g. "gpt-4o" or "gemini-1.5-pro"
+#
+# 4. Enable GitHub Pages:
+#      Repo Settings → Pages → Source: "Deploy from a branch"
+#      Branch: main (or master)  /  Folder: / (root)
+#
+# 5. Grant Actions write permission:
+#      Repo Settings → Actions → General → Workflow permissions
+#      → Select "Read and write permissions" → Save
+# ================================================================
+
+name: build:news
+
+on:
+  # ── Scheduled: every day at 06:00 UTC ──────────────────────────
+  schedule:
+    - cron: "0 6 * * *"
+
+  # ── Manual trigger from the Actions tab ────────────────────────
+  workflow_dispatch:
+
+# Prevent multiple runs overlapping
+concurrency:
+  group: build-news
+  cancel-in-progress: false
+
+jobs:
+  generate-and-deploy:
+    name: Generate Articles & Deploy
+    runs-on: ubuntu-latest
+
+    # Needed so the job can push commits back to the repo
+    permissions:
+      contents: write
+
+    steps:
+      # ── 1. Checkout ───────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so we can push back cleanly
+          fetch-depth: 0
+
+      # ── 2. Set up Python ──────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # ── 3. Install dependencies ───────────────────────────────
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ── 4. Run the newsletter generator ──────────────────────
+      - name: Generate daily blog articles
+        env:
+          # ► These are read from your GitHub Actions Secrets.
+          # ► Never hard-code API keys in this file.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AI_PROVIDER:    ${{ secrets.AI_PROVIDER }}
+          AI_MODEL:       ${{ secrets.AI_MODEL }}
+        run: python generate_newsletter.py
+
+      # ── 5. Commit the updated index.html ─────────────────────
+      - name: Commit updated index.html
+        run: |
+          git config --global user.name  "EdgePhone Bot"
+          git config --global user.email "bot@edgephone.ai"
+
+          # Stage only the HTML file (never commit secrets or logs)
+          git add index.html
+
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit — index.html is already up to date."
+          else
+            DATE=$(date -u +"%Y-%m-%d")
+            git commit -m "chore: daily blog update ${DATE} [skip ci]"
+          fi
+
+      # ── 6. Push changes ───────────────────────────────────────
+      - name: Push changes to main branch
+        run: |
+          # Push to whichever branch triggered the workflow
+          git push origin HEAD:${{ github.ref_name }}
+
+      # ── 7. (Optional) Notify on failure ──────────────────────
+      # Uncomment and configure if you want Slack/email alerts:
+      #
+      # - name: Notify on failure
+      #   if: failure()
+      #   uses: slackapi/slack-github-action@v1.26.0
+      #   with:
+      #     payload: '{"text":"❌ EdgePhone blog build failed: ${{ github.run_url }}"}'
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

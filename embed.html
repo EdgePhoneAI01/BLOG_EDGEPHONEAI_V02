@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--
+  embed.html
+  ==========
+  Drop this file (or copy the <iframe> snippet below) into any page on
+  edgephone.ai or any third-party site to embed the EdgePhone.ai blog.
+
+  HOW IT WORKS
+  ────────────
+  The blog page (index.html) contains a small "sender" script that
+  posts its scrollHeight to window.parent via postMessage.
+  The "receiver" script in THIS page listens for that message and
+  resizes the <iframe> element accordingly.
+
+  This is the ONLY safe cross-origin auto-resize approach — it does
+  NOT require document.domain tricks or a shared origin.
+
+  ► CHANGE THE src URL BELOW to your actual GitHub Pages URL before
+    deploying this embed snippet to production.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EdgePhone.ai Blog Embed – Copy & Paste Snippet</title>
+  <style>
+    /* ── Demo page wrapper styles (not needed in production) ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0e0f24;
+      color: #c8caf0;
+      padding: 2rem 1.5rem;
+    }
+    h1 { font-size: 1.4rem; margin-bottom: 0.5rem; color: #00E5FF; }
+    p  { font-size: 0.9rem; color: #9b9fc8; margin-bottom: 1.5rem; }
+
+    /* Code snippet box */
+    .snippet-box {
+      background: #1a1b3a;
+      border: 1px solid rgba(106,0,244,0.4);
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+    .snippet-box pre {
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+      color: #a8edea;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Live iframe wrapper */
+    .iframe-wrapper {
+      width: 100%;
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #epai-blog-iframe {
+      width: 100%;
+      border: none;
+      display: block;
+      /* Initial height prevents a 0-height flash before postMessage fires */
+      min-height: 400px;
+      transition: height 200ms ease;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>EdgePhone.ai Blog – Embed Snippet</h1>
+  <p>
+    Copy the code block below and paste it into any page where you want the
+    blog to appear. The iframe will automatically resize to fit its content
+    on all screen sizes.
+  </p>
+
+  <!-- ── COPY-PASTE SNIPPET ──────────────────────────────────── -->
+  <div class="snippet-box">
+    <pre id="snippet-code">
+&lt;!-- EdgePhone.ai Blog Embed --&gt;
+&lt;iframe
+  id="epai-blog-iframe"
+  src="https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/"
+  title="EdgePhone.ai Blog – Edge AI Daily"
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade"
+  style="width:100%;border:none;display:block;min-height:400px;"
+&gt;&lt;/iframe&gt;
+
+&lt;script&gt;
+(function () {
+  'use strict';
+  var iframe = document.getElementById('epai-blog-iframe');
+  if (!iframe) return;
+
+  /*
+   * SECURITY NOTE
+   * ─────────────
+   * We check event.origin against the blog's exact origin before acting
+   * on any postMessage, preventing malicious iframes from injecting
+   * arbitrary resize commands into your page.
+   *
+   * ► CHANGE THIS to match your actual GitHub Pages URL.
+   */
+  var BLOG_ORIGIN = 'https://YOUR-USERNAME.github.io';
+
+  function onMessage(event) {
+    // Origin check – only process messages from our own blog
+    if (event.origin !== BLOG_ORIGIN) return;
+
+    var data = event.data;
+    if (
+      data &amp;&amp;
+      typeof data === 'object' &amp;&amp;
+      data.type === 'epai-resize' &amp;&amp;
+      typeof data.height === 'number' &amp;&amp;
+      data.height &gt; 0
+    ) {
+      iframe.style.height = data.height + 'px';
+    }
+  }
+
+  window.addEventListener('message', onMessage, false);
+})();
+&lt;/script&gt;</pre>
+  </div>
+
+  <!-- ── LIVE PREVIEW ─────────────────────────────────────────── -->
+  <p>Live preview (below) — the iframe auto-adjusts its height via postMessage:</p>
+
+  <div class="iframe-wrapper">
+    <!--
+      ► CHANGE src to your GitHub Pages URL, e.g.:
+        https://your-username.github.io/blog-edgephoneai/
+    -->
+    <iframe
+      id="epai-blog-iframe"
+      src="index.html"
+      title="EdgePhone.ai Blog – Edge AI Daily"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
+
+  <!-- ── RECEIVER SCRIPT ───────────────────────────────────────── -->
+  <script>
+    (function () {
+      'use strict';
+
+      var iframe = document.getElementById('epai-blog-iframe');
+      if (!iframe) return;
+
+      /*
+       * In production, replace '*' with your exact blog origin, e.g.:
+       *   var BLOG_ORIGIN = 'https://your-username.github.io';
+       *
+       * Using '*' here allows the local file:// preview to work during
+       * development. In production you MUST restrict the origin.
+       *
+       * ► SET THIS to your GitHub Pages domain before deploying.
+       */
+      var BLOG_ORIGIN = '*';   // ← CHANGE IN PRODUCTION
+
+      function isValidOrigin(origin) {
+        if (BLOG_ORIGIN === '*') return true;            // dev mode only
+        return origin === BLOG_ORIGIN;
+      }
+
+      function onMessage(event) {
+        if (!isValidOrigin(event.origin)) return;
+
+        var data = event.data;
+        if (
+          data &&
+          typeof data === 'object' &&
+          data.type === 'epai-resize' &&
+          typeof data.height === 'number' &&
+          data.height > 0
+        ) {
+          // Add a small buffer to prevent a 1px scrollbar
+          iframe.style.height = (data.height + 4) + 'px';
+        }
+      }
+
+      window.addEventListener('message', onMessage, false);
+
+      /*
+       * Fallback: if the blog is same-origin (local dev), we can also
+       * poll the iframe's contentDocument height.  This only runs when
+       * cross-origin postMessage is NOT available.
+       */
+      iframe.addEventListener('load', function () {
+        try {
+          var doc = iframe.contentDocument || iframe.contentWindow.document;
+          if (doc) {
+            var h = doc.documentElement.scrollHeight;
+            if (h > 0) iframe.style.height = (h + 4) + 'px';
+          }
+        } catch (e) {
+          // Cross-origin: silently ignored; postMessage will handle it.
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

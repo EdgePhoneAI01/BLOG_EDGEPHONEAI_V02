@@ -1,0 +1,15 @@
+# EdgePhone.ai Blog Generator – Python dependencies
+# Install with:  pip install -r requirements.txt
+
+# HTTP requests library (used as an optional faster fallback)
+requests>=2.31.0
+
+# Google News RSS / HTML parsing (optional, for advanced scraping)
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# OpenAI Python SDK (only required if using OpenAI as AI_PROVIDER)
+openai>=1.30.0
+
+# Google Generative AI SDK (only required if using Gemini as AI_PROVIDER)
+google-generativeai>=0.5.0

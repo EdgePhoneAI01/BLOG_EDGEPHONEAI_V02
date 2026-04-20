@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ============================================================
+       META & SEO
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- Primary SEO -->
+  <title>EdgePhone.ai Blog – Edge AI, On-Device AI & Mobile Intelligence</title>
+  <meta name="description" content="Daily insights on Edge AI, on-device inference, privacy-first mobile AI, and the future of phone-first intelligence. Powered by EdgePhone.ai." />
+  <meta name="keywords" content="Edge AI, on-device AI, phone-first AI, offline AI, local AI processing, on-device inference, lightweight AI models, low-latency AI, privacy-first AI, mobile machine learning, EdgePhone" />
+  <meta name="author" content="EdgePhone.ai" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.edgephone.ai/blog" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.edgephone.ai/blog" />
+  <meta property="og:title" content="EdgePhone.ai Blog – Edge AI & On-Device Intelligence" />
+  <meta property="og:description" content="Daily insights on Edge AI, on-device inference, privacy-first mobile AI, and the future of phone-first intelligence." />
+  <meta property="og:image" content="https://www.edgephone.ai/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@edgephone_ai" />
+  <meta name="twitter:title" content="EdgePhone.ai Blog – Edge AI & On-Device Intelligence" />
+  <meta name="twitter:description" content="Daily insights on Edge AI, on-device inference, privacy-first mobile AI, and the future of phone-first intelligence." />
+  <meta name="twitter:image" content="https://www.edgephone.ai/og-image.png" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "EdgePhone.ai Blog",
+    "url": "https://www.edgephone.ai/blog",
+    "description": "Daily insights on Edge AI, on-device inference, and privacy-first mobile intelligence.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "EdgePhone.ai",
+      "url": "https://www.edgephone.ai",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.edgephone.ai/logo.png"
+      }
+    }
+  }
+  </script>
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- ============================================================
+       IFRAME EMBED AUTO-HEIGHT RECEIVER
+       If this page is loaded inside an iframe on another domain,
+       this script posts its height back to the parent so the
+       parent can resize the iframe (see embed.html for the host side).
+       ============================================================ -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var h = document.documentElement.scrollHeight;
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'epai-resize', height: h }, '*');
+        }
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      // Also fire when images or lazy content finishes loading
+      var ro = new ResizeObserver(sendHeight);
+      ro.observe(document.body);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       SKIP LINK (accessibility)
+       ============================================================ -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="https://www.edgephone.ai/" class="logo-link" aria-label="EdgePhone.ai home">
+        <span class="logo-icon" aria-hidden="true">&#9670;</span>
+        <span class="logo-text">Edge<span class="logo-accent">Phone</span>.ai</span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <ul>
+          <li><a href="#today-blogs">Today's Blogs</a></li>
+          <li><a href="#archived-blogs">Archive</a></li>
+          <li><a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" class="nav-cta">Visit Site</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Hero banner -->
+    <div class="hero" role="complementary">
+      <div class="container hero-inner">
+        <div class="hero-badge">Daily AI Intelligence</div>
+        <h1 class="hero-title">
+          The Edge AI Blog<br />
+          <span class="hero-accent">Powered by EdgePhone.ai</span>
+        </h1>
+        <p class="hero-subtitle">
+          Fresh daily articles on on-device AI, privacy-first inference, mobile ML,
+          and everything shaping the future of phone-first intelligence.
+        </p>
+        <a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          Discover EdgePhone.ai &rarr;
+        </a>
+      </div>
+      <div class="hero-grid-bg" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main id="main-content">
+
+    <!-- ── TODAY'S BLOGS ─────────────────────────────────────── -->
+    <section id="today-blogs" class="section section-today" aria-labelledby="today-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Fresh Today</span>
+          <h2 id="today-heading" class="section-title">Today's Blogs</h2>
+          <p class="section-subtitle">
+            Auto-generated daily. Last refreshed:
+            <time id="last-updated" datetime="">–</time>
+          </p>
+        </div>
+
+        <!-- ── ARTICLES START (auto-updated by generate_newsletter.py) ── -->
+        <div class="articles-grid" id="today-articles-grid">
+
+          <!-- ARTICLE 1 -->
+          <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="card-tag">Edge AI</div>
+            <h2 class="card-title" itemprop="headline">
+              <a href="https://www.edgephone.ai/" itemprop="url" target="_blank" rel="noopener noreferrer">
+                Why On-Device AI Is the Next Frontier for Smartphone Privacy
+              </a>
+            </h2>
+            <p class="card-meta">
+              <time itemprop="datePublished" datetime="2026-04-20">April 20, 2026</time>
+              &middot; <span>5 min read</span>
+            </p>
+            <p class="card-excerpt" itemprop="description">
+              As cloud AI costs and privacy concerns climb in tandem, on-device inference is rapidly becoming
+              the gold standard. EdgePhone.ai explores why processing your data locally—never leaving your
+              pocket—is not just a feature but a right.
+            </p>
+            <a class="card-link" href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" aria-label="Read more about On-Device AI privacy">
+              Read more &rarr;
+            </a>
+          </article>
+
+          <!-- ARTICLE 2 -->
+          <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="card-tag">Mobile ML</div>
+            <h2 class="card-title" itemprop="headline">
+              <a href="https://www.edgephone.ai/" itemprop="url" target="_blank" rel="noopener noreferrer">
+                Lightweight AI Models: How Quantization Fits a GPT into Your Palm
+              </a>
+            </h2>
+            <p class="card-meta">
+              <time itemprop="datePublished" datetime="2026-04-20">April 20, 2026</time>
+              &middot; <span>6 min read</span>
+            </p>
+            <p class="card-excerpt" itemprop="description">
+              INT4 quantization and model pruning are shrinking billion-parameter models to fit on a 6 GB
+              phone RAM budget. We break down the techniques making real-time, zero-latency AI possible
+              on everyday devices—no data center required.
+            </p>
+            <a class="card-link" href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" aria-label="Read more about lightweight AI models">
+              Read more &rarr;
+            </a>
+          </article>
+
+          <!-- ARTICLE 3 -->
+          <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="card-tag">Privacy AI</div>
+            <h2 class="card-title" itemprop="headline">
+              <a href="https://www.edgephone.ai/" itemprop="url" target="_blank" rel="noopener noreferrer">
+                Zero Round-Trip AI: The Silent Revolution in Low-Latency Mobile Intelligence
+              </a>
+            </h2>
+            <p class="card-meta">
+              <time itemprop="datePublished" datetime="2026-04-20">April 20, 2026</time>
+              &middot; <span>4 min read</span>
+            </p>
+            <p class="card-excerpt" itemprop="description">
+              Every millisecond a request spends in transit to a cloud server is a millisecond of lag the
+              user feels. EdgePhone.ai's zero round-trip architecture keeps inference local, responses
+              instant, and your personal data entirely off the wire.
+            </p>
+            <a class="card-link" href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" aria-label="Read more about zero round-trip AI">
+              Read more &rarr;
+            </a>
+          </article>
+
+          <!-- ARTICLE 4 -->
+          <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="card-tag">Edge Computing</div>
+            <h2 class="card-title" itemprop="headline">
+              <a href="https://www.edgephone.ai/" itemprop="url" target="_blank" rel="noopener noreferrer">
+                Sensor Fusion &amp; On-Device Vision: How Edge Phones See the World Differently
+              </a>
+            </h2>
+            <p class="card-meta">
+              <time itemprop="datePublished" datetime="2026-04-20">April 20, 2026</time>
+              &middot; <span>7 min read</span>
+            </p>
+            <p class="card-excerpt" itemprop="description">
+              Combining camera, LiDAR, accelerometer, and gyroscope data in real-time—without a cloud
+              pipeline—is the hallmark of a true edge phone. Discover how sensor fusion is powering
+              next-generation computer vision directly on-device.
+            </p>
+            <a class="card-link" href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" aria-label="Read more about sensor fusion and on-device vision">
+              Read more &rarr;
+            </a>
+          </article>
+
+        </div>
+        <!-- ── ARTICLES END ── -->
+      </div>
+    </section>
+
+    <!-- ── CTA BANNER ─────────────────────────────────────────── -->
+    <aside class="cta-banner" aria-label="EdgePhone.ai promotion">
+      <div class="container cta-inner">
+        <div>
+          <p class="cta-label">Powered by</p>
+          <p class="cta-heading">EdgePhone.ai</p>
+          <p class="cta-sub">The world's first phone built entirely around on-device AI.</p>
+        </div>
+        <a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" class="btn btn-cyan">
+          Explore the Platform &rarr;
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── ARCHIVED BLOGS ─────────────────────────────────────── -->
+    <section id="archived-blogs" class="section section-archive" aria-labelledby="archive-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Past Articles</span>
+          <h2 id="archive-heading" class="section-title">Archived Blogs</h2>
+          <p class="section-subtitle">Previously published articles, preserved for reference.</p>
+        </div>
+
+        <!-- ── ARCHIVE START (auto-updated by generate_newsletter.py) ── -->
+        <div class="archive-list" id="archived-articles-list">
+          <p class="archive-empty">No archived articles yet. Check back tomorrow!</p>
+        </div>
+        <!-- ── ARCHIVE END ── -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon" aria-hidden="true">&#9670;</span>
+        <span class="logo-text">Edge<span class="logo-accent">Phone</span>.ai</span>
+      </div>
+      <p class="footer-tagline">
+        Phone-first intelligence. On-device. Private. Instant.
+      </p>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer">Website</a></li>
+          <li><a href="#today-blogs">Today's Blogs</a></li>
+          <li><a href="#archived-blogs">Archive</a></li>
+        </ul>
+      </nav>
+      <p class="footer-copy">
+        &copy; <span id="footer-year"></span> EdgePhone.ai. All rights reserved.
+        Blog content auto-generated and updated daily.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       INLINE SCRIPTS
+       ============================================================ -->
+  <script>
+    // Populate dynamic date values
+    (function () {
+      var now = new Date();
+
+      // Footer year
+      var fy = document.getElementById('footer-year');
+      if (fy) fy.textContent = now.getFullYear();
+
+      // Last-updated timestamp
+      var lu = document.getElementById('last-updated');
+      if (lu) {
+        var iso = now.toISOString().split('T')[0];
+        lu.setAttribute('datetime', iso);
+        lu.textContent = now.toLocaleDateString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

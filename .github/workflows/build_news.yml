@@ -28,6 +28,11 @@
 name: build:news
 
 on:
+  # ── Push to main branch ────────────────────────────────────────
+  push:
+    branches:
+      - main
+
   # ── Scheduled: every day at 06:00 UTC ──────────────────────────
   schedule:
     - cron: "0 6 * * *"
@@ -87,8 +92,8 @@ jobs:
           git config --global user.name  "EdgePhone Bot"
           git config --global user.email "bot@edgephone.ai"
 
-          # Stage only the HTML file (never commit secrets or logs)
-          git add index.html
+          # Stage the HTML and the article data file (never commit secrets or logs)
+          git add index.html articles.json
 
           # Only commit if there are actual changes
           if git diff --cached --quiet; then

@@ -89,7 +89,8 @@ DEFAULT_OPENAI_MODEL = "gpt-4o"
 DEFAULT_GEMINI_MODEL = "gemini-1.5-pro"
 
 # Path to the HTML file (relative to script location)
-HTML_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
+HTML_FILE     = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
+ARTICLES_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "articles.json")
 
 # ── Logging setup ─────────────────────────────────────────────────
 logging.basicConfig(
@@ -214,7 +215,8 @@ def build_prompt(headlines: list[dict], num_articles: int = ARTICLES_TO_GENERATE
           "tag":      "<short tag>",
           "title":    "<article title>",
           "excerpt":  "<60-90 word excerpt>",
-          "read_min": <integer minutes to read>
+          "read_min": <integer minutes to read>,
+          "body":     "<full article as HTML — use <p>, <h2>, <h3>, <ul>, <li>, <strong> tags. 300-400 words. Include 1-2 hyperlinks to https://www.edgephone.ai/ using <a href='https://www.edgephone.ai/'>EdgePhone.ai</a>.>"
         }}
 
         Return ONLY valid JSON — no markdown fences, no extra text.
@@ -267,7 +269,7 @@ def call_openai(prompt: str) -> str:
             {"role": "user", "content": prompt},
         ],
         "temperature": 0.75,
-        "max_tokens": 2000,
+        "max_tokens": 4000,
     }).encode()
 
     req = urllib.request.Request(
@@ -306,7 +308,7 @@ def call_gemini(prompt: str) -> str:
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature":    0.75,
-            "maxOutputTokens": 2000,
+            "maxOutputTokens": 4000,
         },
     }).encode()
 
@@ -385,28 +387,36 @@ def _stub_article(n: int) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────────
-# STEP 4 – RENDER ARTICLE HTML SNIPPETS
+# STEP 4 – SLUG HELPER & RENDER ARTICLE HTML SNIPPETS
 # ─────────────────────────────────────────────────────────────────
+
+def slugify(text: str) -> str:
+    """Convert a title string to a URL-safe slug, e.g. 'Hello World!' → 'hello-world'."""
+    text = text.lower()
+    text = re.sub(r"[^\w\s-]", "", text)   # remove non-word chars (keep hyphens)
+    text = re.sub(r"[\s_]+", "-", text)     # spaces/underscores → hyphens
+    text = re.sub(r"-+", "-", text)         # collapse multiple hyphens
+    return text.strip("-")[:80]             # cap length
+
 
 def render_today_article(article: dict, pub_date: str) -> str:
     """
-    Convert an article dict into a <article class="card"> HTML block
-    matching the design system in styles.css.
+    Convert an article dict into a <article class="card"> HTML block.
+    'Read more' links to article.html?id=<slug> instead of the main site.
     """
-    tag      = html.escape(article.get("tag",      "Edge AI"))
-    title    = html.escape(article.get("title",    "Untitled"))
-    excerpt  = html.escape(article.get("excerpt",  ""))
+    tag      = html.escape(article.get("tag",   "Edge AI"))
+    title    = html.escape(article.get("title", "Untitled"))
+    excerpt  = html.escape(article.get("excerpt", ""))
     read_min = int(article.get("read_min", 5))
-
-    # Build a slug-like aria-label
-    label_slug = re.sub(r"[^a-z0-9 ]", "", title.lower())[:50].strip()
+    slug     = article.get("id") or slugify(article.get("title", "article"))
+    detail_url = f"article.html?id={slug}"
 
     return textwrap.dedent(f"""\
           <!-- ARTICLE -->
           <article class="card" itemscope itemtype="https://schema.org/BlogPosting">
             <div class="card-tag">{tag}</div>
             <h2 class="card-title" itemprop="headline">
-              <a href="{SITE_URL}" itemprop="url" target="_blank" rel="noopener noreferrer">
+              <a href="{detail_url}" itemprop="url">
                 {title}
               </a>
             </h2>
@@ -417,7 +427,7 @@ def render_today_article(article: dict, pub_date: str) -> str:
             <p class="card-excerpt" itemprop="description">
               {excerpt}
             </p>
-            <a class="card-link" href="{SITE_URL}" target="_blank" rel="noopener noreferrer" aria-label="Read more about {label_slug}">
+            <a class="card-link" href="{detail_url}" aria-label="Read more about {slug}">
               Read more &rarr;
             </a>
           </article>""")
@@ -426,28 +436,29 @@ def render_today_article(article: dict, pub_date: str) -> str:
 def render_archive_article(card_html: str) -> str:
     """
     Convert a full <article class="card"> block into the compact
-    <article class="archive-card"> format used in the Archived Blogs section.
+    <article class="archive-card"> format. Preserves the article.html link.
     """
-    # Extract fields from the card HTML using simple regex
     tag_m     = re.search(r'class="card-tag"[^>]*>([^<]+)<', card_html)
     title_m   = re.search(r'itemprop="headline"[^>]*>\s*<a[^>]*>\s*(.*?)\s*</a>', card_html, re.DOTALL)
     date_m    = re.search(r'datetime="([^"]+)"', card_html)
     excerpt_m = re.search(r'itemprop="description"[^>]*>\s*(.*?)\s*</p>', card_html, re.DOTALL)
+    # Preserve the original detail link if present
+    link_m    = re.search(r'<a[^>]+href="(article\.html\?id=[^"]+)"', card_html)
 
-    tag     = tag_m.group(1).strip()     if tag_m     else "Archive"
-    title   = re.sub(r"\s+", " ", title_m.group(1)).strip() if title_m else "Archived Article"
-    pub_iso = date_m.group(1)            if date_m    else ""
-    excerpt = re.sub(r"\s+", " ", excerpt_m.group(1)).strip() if excerpt_m else ""
-
-    label_slug = re.sub(r"[^a-z0-9 ]", "", title.lower())[:50].strip()
+    tag     = tag_m.group(1).strip()                                      if tag_m     else "Archive"
+    title   = re.sub(r"\s+", " ", title_m.group(1)).strip()               if title_m   else "Archived Article"
+    pub_iso = date_m.group(1)                                              if date_m    else ""
+    excerpt = re.sub(r"\s+", " ", excerpt_m.group(1)).strip()             if excerpt_m else ""
+    link    = link_m.group(1)                                              if link_m    else SITE_URL
+    slug    = re.sub(r"[^a-z0-9 ]", "", title.lower())[:50].strip()
 
     return textwrap.dedent(f"""\
           <article class="archive-card" itemscope itemtype="https://schema.org/BlogPosting">
             <div>
               <p class="archive-card-tag">{tag}</p>
               <h3 class="archive-card-title" itemprop="headline">
-                <a href="{SITE_URL}" itemprop="url" target="_blank" rel="noopener noreferrer"
-                   aria-label="Read archived article: {label_slug}">
+                <a href="{link}" itemprop="url"
+                   aria-label="Read archived article: {slug}">
                   {title}
                 </a>
               </h3>
@@ -579,6 +590,48 @@ def update_html(articles: list[dict]) -> None:
 
 
 # ─────────────────────────────────────────────────────────────────
+# STEP 6 – UPDATE articles.json
+# ─────────────────────────────────────────────────────────────────
+
+def update_articles_json(articles: list[dict], today_iso: str) -> None:
+    """
+    Prepend the new articles to articles.json so article.html can load them.
+    Assigns a slug-based 'id' field to each new article if not already set.
+    Keeps the file capped at 120 entries to avoid unbounded growth.
+    """
+    MAX_ENTRIES = 120
+
+    # Assign ids and dates to new articles
+    for a in articles:
+        if not a.get("id"):
+            a["id"] = slugify(a.get("title", "article"))
+        if not a.get("date"):
+            a["date"] = today_iso
+
+    # Load existing articles
+    existing: list[dict] = []
+    if os.path.exists(ARTICLES_JSON):
+        try:
+            with open(ARTICLES_JSON, encoding="utf-8") as fh:
+                existing = json.load(fh)
+        except (json.JSONDecodeError, OSError) as exc:
+            log.warning("Could not read articles.json (%s) — starting fresh.", exc)
+
+    # Prepend new articles, dedup by id
+    existing_ids = {a.get("id") for a in existing}
+    new_entries  = [a for a in articles if a.get("id") not in existing_ids]
+    merged       = new_entries + existing
+
+    # Cap
+    merged = merged[:MAX_ENTRIES]
+
+    with open(ARTICLES_JSON, "w", encoding="utf-8") as fh:
+        json.dump(merged, fh, indent=2, ensure_ascii=False)
+
+    log.info("articles.json updated — %d total entries.", len(merged))
+
+
+# ─────────────────────────────────────────────────────────────────
 # ENTRY POINT
 # ─────────────────────────────────────────────────────────────────
 
@@ -591,7 +644,17 @@ def main() -> None:
     # 2. Generate articles via AI
     articles = generate_articles(headlines)
 
-    # 3. Update index.html
+    today_iso = datetime.date.today().isoformat()
+
+    # Assign slugs before writing anything so all steps share the same ids
+    for a in articles:
+        if not a.get("id"):
+            a["id"] = slugify(a.get("title", "article"))
+
+    # 3. Update articles.json (must run before update_html so ids are set)
+    update_articles_json(articles, today_iso)
+
+    # 4. Update index.html
     update_html(articles)
 
     log.info("=== Pipeline complete ===")

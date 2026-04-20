@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- SEO meta tags are injected dynamically by the script below -->
+  <title>Loading… | EdgePhone.ai Blog</title>
+  <meta name="description" content="" id="meta-description" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="" id="meta-canonical" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="EdgePhone.ai Blog" />
+  <meta property="og:title"       content="" id="og-title" />
+  <meta property="og:description" content="" id="og-description" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@edgephone_ai" />
+  <meta name="twitter:title"       content="" id="tw-title" />
+  <meta name="twitter:description" content="" id="tw-description" />
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ── Article page specific styles ── */
+    .article-page { padding-block: 3rem 5rem; }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 2rem;
+      transition: color 150ms ease;
+    }
+    .article-back:hover { color: var(--color-cyan); }
+    .article-back::before { content: '←'; }
+
+    .article-header { margin-bottom: 2.5rem; }
+
+    .article-tag {
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-cyan);
+      margin-bottom: 1rem;
+    }
+
+    .article-title {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--color-text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .article-meta {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .article-meta time { color: var(--color-cyan); font-weight: 600; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin-block: 2rem;
+    }
+
+    /* Article body prose */
+    .article-body {
+      max-width: 720px;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--color-text-secondary);
+    }
+    .article-body p   { margin-bottom: 1.4rem; }
+    .article-body h2  { font-size: 1.4rem; color: var(--color-text-primary); margin: 2rem 0 0.75rem; }
+    .article-body h3  { font-size: 1.15rem; color: var(--color-text-primary); margin: 1.5rem 0 0.5rem; }
+    .article-body a   { color: var(--color-cyan); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body ul,
+    .article-body ol  { padding-left: 1.5rem; margin-bottom: 1.4rem; }
+    .article-body li  { margin-bottom: 0.4rem; }
+    .article-body strong { color: var(--color-text-primary); font-weight: 700; }
+    .article-body blockquote {
+      border-left: 3px solid var(--color-purple);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--color-text-secondary);
+      font-style: italic;
+    }
+
+    /* CTA inline */
+    .article-cta {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(106,0,244,0.18), rgba(0,229,255,0.08));
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .article-cta-text p:first-child {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .article-cta-text p:last-child {
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    /* Loading / error states */
+    .state-loading,
+    .state-error {
+      text-align: center;
+      padding: 5rem 1rem;
+      color: var(--color-text-muted);
+    }
+    .state-loading .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--color-border);
+      border-top-color: var(--color-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-error h2 { color: var(--color-text-primary); margin-bottom: 0.5rem; }
+
+    /* JSON-LD placeholder — filled by JS */
+    #json-ld-article { display: none; }
+  </style>
+
+  <!-- iframe auto-height sender (same as index.html) -->
+  <script>
+    (function () {
+      function sendHeight() {
+        var h = document.documentElement.scrollHeight;
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'epai-resize', height: h }, '*');
+        }
+      }
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      var ro = new ResizeObserver(sendHeight);
+      ro.observe(document.body);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <a class="skip-link" href="#article-content">Skip to article</a>
+
+  <!-- ── HEADER (same nav as index.html) ────────────────────────── -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="https://www.edgephone.ai/" class="logo-link" aria-label="EdgePhone.ai home">
+        <span class="logo-icon" aria-hidden="true">&#9670;</span>
+        <span class="logo-text">Edge<span class="logo-accent">Phone</span>.ai</span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <ul>
+          <li><a href="index.html#today-blogs">Today's Blogs</a></li>
+          <li><a href="index.html#archived-blogs">Archive</a></li>
+          <li><a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" class="nav-cta">Visit Site</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── MAIN ───────────────────────────────────────────────────── -->
+  <main id="article-content" class="article-page">
+    <div class="container" style="max-width: 820px;">
+
+      <!-- Loading state (shown until JS resolves) -->
+      <div class="state-loading" id="state-loading">
+        <div class="spinner"></div>
+        <p>Loading article…</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="state-error" id="state-error" hidden>
+        <h2>Article not found</h2>
+        <p>This article may have been moved or doesn't exist.</p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:1.5rem;">← Back to Blog</a>
+      </div>
+
+      <!-- Article content (hidden until loaded) -->
+      <article id="article-container" hidden itemscope itemtype="https://schema.org/BlogPosting">
+
+        <a href="index.html" class="article-back">Back to Blog</a>
+
+        <header class="article-header">
+          <div class="article-tag" id="art-tag"></div>
+          <h1 class="article-title" id="art-title" itemprop="headline"></h1>
+          <p class="article-meta">
+            <time id="art-date" itemprop="datePublished"></time>
+            &middot;
+            <span id="art-read"></span>
+          </p>
+        </header>
+
+        <hr class="article-divider" />
+
+        <div class="article-body" id="art-body" itemprop="articleBody"></div>
+
+        <!-- Inline CTA -->
+        <div class="article-cta">
+          <div class="article-cta-text">
+            <p>Powered by</p>
+            <p>Discover EdgePhone.ai — the world's first phone built entirely around on-device AI.</p>
+          </div>
+          <a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer" class="btn btn-cyan">
+            Explore EdgePhone.ai &rarr;
+          </a>
+        </div>
+
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon" aria-hidden="true">&#9670;</span>
+        <span class="logo-text">Edge<span class="logo-accent">Phone</span>.ai</span>
+      </div>
+      <p class="footer-tagline">Phone-first intelligence. On-device. Private. Instant.</p>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="https://www.edgephone.ai/" target="_blank" rel="noopener noreferrer">Website</a></li>
+          <li><a href="index.html#today-blogs">Today's Blogs</a></li>
+          <li><a href="index.html#archived-blogs">Archive</a></li>
+        </ul>
+      </nav>
+      <p class="footer-copy">
+        &copy; <span id="footer-year"></span> EdgePhone.ai. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── ARTICLE LOADER SCRIPT ──────────────────────────────────── -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ── Helpers ────────────────────────────────────────────────
+      function qs(sel) { return document.querySelector(sel); }
+      function show(el) { el.hidden = false; }
+      function hide(el) { el.hidden = true; }
+
+      function formatDate(iso) {
+        try {
+          var d = new Date(iso + 'T00:00:00');
+          return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (e) { return iso; }
+      }
+
+      // ── Read ?id= param from URL ───────────────────────────────
+      var params    = new URLSearchParams(window.location.search);
+      var articleId = params.get('id') || '';
+
+      if (!articleId) {
+        hide(qs('#state-loading'));
+        show(qs('#state-error'));
+        return;
+      }
+
+      // ── Fetch articles.json ────────────────────────────────────
+      fetch('articles.json?v=' + Date.now())
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (articles) {
+          var article = articles.find(function (a) { return a.id === articleId; });
+          if (!article) throw new Error('not found');
+          renderArticle(article);
+        })
+        .catch(function (err) {
+          console.error('Article load error:', err);
+          hide(qs('#state-loading'));
+          show(qs('#state-error'));
+        });
+
+      // ── Render ─────────────────────────────────────────────────
+      function renderArticle(a) {
+        // Populate visible elements
+        qs('#art-tag').textContent   = a.tag      || '';
+        qs('#art-title').textContent = a.title     || '';
+        qs('#art-read').textContent  = (a.read_min || 5) + ' min read';
+
+        var dateEl = qs('#art-date');
+        dateEl.setAttribute('datetime', a.date || '');
+        dateEl.textContent = formatDate(a.date || '');
+
+        // Body: if HTML provided use innerHTML, otherwise render excerpt as paragraph
+        var body = a.body || ('<p>' + (a.excerpt || '') + '</p>');
+        qs('#art-body').innerHTML = body;
+
+        // Update page title & meta
+        document.title = a.title + ' | EdgePhone.ai Blog';
+
+        var canonical = window.location.origin + window.location.pathname + '?id=' + encodeURIComponent(a.id);
+        setMeta('meta-description', 'content', a.excerpt  || '');
+        setMeta('meta-canonical',   'href',    canonical);
+        setMeta('og-title',         'content', a.title    || '');
+        setMeta('og-description',   'content', a.excerpt  || '');
+        setMeta('tw-title',         'content', a.title    || '');
+        setMeta('tw-description',   'content', a.excerpt  || '');
+
+        // JSON-LD structured data
+        injectJsonLd(a, canonical);
+
+        // Footer year
+        var fy = qs('#footer-year');
+        if (fy) fy.textContent = new Date().getFullYear();
+
+        // Show article
+        hide(qs('#state-loading'));
+        show(qs('#article-container'));
+      }
+
+      function setMeta(id, attr, value) {
+        var el = document.getElementById(id);
+        if (el) el.setAttribute(attr, value);
+      }
+
+      function injectJsonLd(a, canonical) {
+        var schema = {
+          '@context':       'https://schema.org',
+          '@type':          'BlogPosting',
+          'headline':        a.title,
+          'description':     a.excerpt,
+          'datePublished':   a.date,
+          'url':             canonical,
+          'author': {
+            '@type': 'Organization',
+            'name':  'EdgePhone.ai',
+            'url':   'https://www.edgephone.ai'
+          },
+          'publisher': {
+            '@type': 'Organization',
+            'name':  'EdgePhone.ai',
+            'logo': {
+              '@type': 'ImageObject',
+              'url':   'https://www.edgephone.ai/logo.png'
+            }
+          }
+        };
+        var s  = document.createElement('script');
+        s.type = 'application/ld+json';
+        s.textContent = JSON.stringify(schema);
+        document.head.appendChild(s);
+      }
+
+    })();
+  </script>
+
+</body>
+</html>

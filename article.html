@@ -156,6 +156,27 @@
 
     /* JSON-LD placeholder — filled by JS */
     #json-ld-article { display: none; }
+
+    /* ── Article mobile optimisation ── */
+    @media (max-width: 768px) {
+      .article-page { padding-block: 1.5rem 3rem; }
+      .article-title { font-size: clamp(1.3rem, 5vw, 1.9rem); }
+      .article-body { font-size: 0.97rem; line-height: 1.75; }
+      .article-cta {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        padding: 1.25rem;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .article-page { padding-block: 1rem 2.5rem; }
+      .article-body { font-size: 0.93rem; }
+      .article-body h2 { font-size: 1.15rem; }
+      .article-body h3 { font-size: 1rem; }
+    }
   </style>
 
   <!-- iframe auto-height sender (same as index.html) -->

@@ -93,7 +93,7 @@ jobs:
           git config --global user.email "bot@edgephone.ai"
 
           # Stage the HTML and the article data file (never commit secrets or logs)
-          git add index.html articles.json
+          git add index.html articles.json .nojekyll
 
           # Only commit if there are actual changes
           if git diff --cached --quiet; then

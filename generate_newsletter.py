@@ -193,7 +193,7 @@ def build_prompt(headlines: list[dict], num_articles: int = ARTICLES_TO_GENERATE
         Write exactly {num_articles} unique, SEO-optimised blog articles.
         Each article must:
 
-        1. Be between 250–350 words.
+        1. Be approximately 800 words.
         2. Have a compelling, keyword-rich title (max 80 chars).
         3. Contain a single paragraph excerpt (60–90 words) suitable for
            the <meta description> and card preview.
@@ -216,7 +216,7 @@ def build_prompt(headlines: list[dict], num_articles: int = ARTICLES_TO_GENERATE
           "title":    "<article title>",
           "excerpt":  "<60-90 word excerpt>",
           "read_min": <integer minutes to read>,
-          "body":     "<full article as HTML — use <p>, <h2>, <h3>, <ul>, <li>, <strong> tags. 300-400 words. Include 1-2 hyperlinks to https://www.edgephone.ai/ using <a href='https://www.edgephone.ai/'>EdgePhone.ai</a>.>"
+          "body":     "<full article as HTML — use <p>, <h2>, <h3>, <ul>, <li>, <strong> tags. Approximately 800 words. Include 1-2 hyperlinks to https://www.edgephone.ai/ using <a href='https://www.edgephone.ai/'>EdgePhone.ai</a>.>"
         }}
 
         Return ONLY valid JSON — no markdown fences, no extra text.
@@ -269,7 +269,7 @@ def call_openai(prompt: str) -> str:
             {"role": "user", "content": prompt},
         ],
         "temperature": 0.75,
-        "max_tokens": 4000,
+        "max_tokens": 12000,
     }).encode()
 
     req = urllib.request.Request(
@@ -308,7 +308,7 @@ def call_gemini(prompt: str) -> str:
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature":    0.75,
-            "maxOutputTokens": 4000,
+            "maxOutputTokens": 12000,
         },
     }).encode()
 

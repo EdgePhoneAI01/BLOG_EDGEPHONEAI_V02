@@ -531,6 +531,16 @@ def extract_today_articles(html_content: str) -> list[str]:
     return articles
 
 
+def _update_last_refreshed(content: str, today_iso: str) -> str:
+    """Stamp the actual content-generation date into the last-updated <time> element."""
+    formatted = _fmt_date(today_iso)
+    return re.sub(
+        r'(<time\s+id="last-updated"[^>]*datetime=")[^"]*("[^>]*>)[^<]*</time>',
+        rf'\g<1>{today_iso}\g<2>{formatted}</time>',
+        content,
+    )
+
+
 def update_html(articles: list[dict]) -> None:
     """
     Main mutation function:
@@ -538,7 +548,8 @@ def update_html(articles: list[dict]) -> None:
       2. Extract the existing Today articles.
       3. Convert them to archive format and prepend to the Archive section.
       4. Inject the new articles into Today's Blogs.
-      5. Write the file back.
+      5. Stamp the generation date into the last-updated element.
+      6. Write the file back.
     """
     today_iso = datetime.date.today().isoformat()  # e.g. "2026-04-20"
 
@@ -580,6 +591,9 @@ def update_html(articles: list[dict]) -> None:
 
     # ── Inject Archive ────────────────────────────────────────────
     content = _replace_between(content, ARCHIVE_START, ARCHIVE_END, updated_archive)
+
+    # ── Stamp the real generation date into last-updated ─────────
+    content = _update_last_refreshed(content, today_iso)
 
     # ── Write ─────────────────────────────────────────────────────
     log.info("Writing updated HTML to %s", HTML_FILE)

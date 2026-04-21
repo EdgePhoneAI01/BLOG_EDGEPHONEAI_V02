@@ -395,15 +395,8 @@
       var fy = document.getElementById('footer-year');
       if (fy) fy.textContent = now.getFullYear();
 
-      // Last-updated timestamp
-      var lu = document.getElementById('last-updated');
-      if (lu) {
-        var iso = now.toISOString().split('T')[0];
-        lu.setAttribute('datetime', iso);
-        lu.textContent = now.toLocaleDateString('en-US', {
-          year: 'numeric', month: 'long', day: 'numeric'
-        });
-      }
+      // last-updated is stamped by generate_newsletter.py at build time —
+      // do NOT override it here with the current date.
     })();
   </script>
 

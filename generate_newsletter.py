@@ -301,7 +301,7 @@ def call_gemini(prompt: str) -> str:
     model   = os.environ.get("AI_MODEL", DEFAULT_GEMINI_MODEL)
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{model}:generateContent?key={api_key}"
+        f"{model}:generateContent"
     )
 
     payload = json.dumps({
@@ -315,7 +315,7 @@ def call_gemini(prompt: str) -> str:
     req = urllib.request.Request(
         url,
         data=payload,
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
         method="POST",
     )
 

@@ -21,7 +21,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Create empty commit
-        run: git commit --allow-empty -m "chore: keepalive"
+        run: |
+          git commit --allow-empty -m "chore: keepalive"
 
       - name: Push empty commit to main
         run: git push origin HEAD:main

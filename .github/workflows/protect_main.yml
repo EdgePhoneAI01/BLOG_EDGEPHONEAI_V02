@@ -1,0 +1,101 @@
+# ================================================================
+# .github/workflows/protect_main.yml
+# EdgePhone.ai – Enforce Branch Protection on main
+# ================================================================
+#
+# What this workflow does:
+#   Calls the GitHub REST API to apply (or refresh) branch-
+#   protection rules on the `main` branch every time it runs.
+#
+# Protection rules applied:
+#   • No force-pushes allowed
+#   • Branch cannot be deleted
+#   • Pull-request review required before merging (1 approver)
+#     – Stale reviews are dismissed when new commits are pushed
+#   • Admins are also subject to these rules (enforce_admins: true)
+#
+# NOTE on the daily bot push (build:news workflow):
+#   That workflow commits directly to `main` using GITHUB_TOKEN.
+#   To allow it to continue after PR-review protection is active,
+#   a repository admin must add "github-actions[bot]" (or the
+#   Copilot app) to the bypass list in:
+#     Settings → Branches → main → Edit → Bypass list
+#   Alternatively, convert the bot job to open a PR instead of a
+#   direct push.
+#
+# NOTE on token permissions:
+#   This workflow uses GITHUB_TOKEN with `administration: write`.
+#   If the workflow run fails with a 403, a repository/org admin
+#   must either:
+#     a) Store a PAT (with `repo` scope) as ADMIN_TOKEN secret and
+#        replace `secrets.GITHUB_TOKEN` below with `secrets.ADMIN_TOKEN`, or
+#     b) Allow GITHUB_TOKEN to manage branch protection in:
+#          Settings → Actions → General → Workflow permissions
+#
+# When it runs:
+#   • Manually via the Actions → "Run workflow" button
+#   • Automatically after the build:news workflow finishes
+#     (keeps protection intact even if it was accidentally removed)
+# ================================================================
+
+name: protect:main-branch
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["build:news"]
+    types: [completed]
+
+jobs:
+  protect-main:
+    name: Apply Branch Protection to main
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Required to read/write branch-protection rules via GITHUB_TOKEN
+      administration: write
+
+    steps:
+      - name: Apply branch protection rules
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/branches/main/protection \
+            --input - <<'EOF'
+          {
+            "required_status_checks": null,
+            "enforce_admins": true,
+            "required_pull_request_reviews": {
+              "dismiss_stale_reviews": true,
+              "require_code_owner_reviews": false,
+              "required_approving_review_count": 1
+            },
+            "restrictions": null,
+            "allow_force_pushes": false,
+            "allow_deletions": false,
+            "block_creations": false,
+            "required_conversation_resolution": false,
+            "lock_branch": false,
+            "allow_fork_syncing": false
+          }
+          EOF
+
+      - name: Confirm protection is active
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== Current protection settings for main ==="
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/branches/main/protection \
+            | jq '{
+                enforce_admins: .enforce_admins.enabled,
+                allow_force_pushes: .allow_force_pushes.enabled,
+                allow_deletions: .allow_deletions.enabled,
+                required_approving_review_count: .required_pull_request_reviews.required_approving_review_count
+              }'

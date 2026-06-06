@@ -24,13 +24,10 @@
 #   direct push.
 #
 # NOTE on token permissions:
-#   This workflow uses GITHUB_TOKEN with `administration: write`.
+#   Branch protection updates may require elevated permissions.
 #   If the workflow run fails with a 403, a repository/org admin
-#   must either:
-#     a) Store a PAT (with `repo` scope) as ADMIN_TOKEN secret and
-#        replace `secrets.GITHUB_TOKEN` below with `secrets.ADMIN_TOKEN`, or
-#     b) Allow GITHUB_TOKEN to manage branch protection in:
-#          Settings → Actions → General → Workflow permissions
+#   must store a PAT (with `repo` scope) as ADMIN_TOKEN secret and
+#   replace `secrets.GITHUB_TOKEN` below with `secrets.ADMIN_TOKEN`.
 #
 # When it runs:
 #   • Manually via the Actions → "Run workflow" button
@@ -50,10 +47,6 @@ jobs:
   protect-main:
     name: Apply Branch Protection to main
     runs-on: ubuntu-latest
-
-    permissions:
-      # Required to read/write branch-protection rules via GITHUB_TOKEN
-      administration: write
 
     steps:
       - name: Apply branch protection rules

@@ -51,10 +51,6 @@ jobs:
     name: Apply Branch Protection to main
     runs-on: ubuntu-latest
 
-    permissions:
-      # Required to read/write branch-protection rules via GITHUB_TOKEN
-      administration: write
-
     steps:
       - name: Apply branch protection rules
         env:
